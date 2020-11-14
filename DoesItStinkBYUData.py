@@ -359,8 +359,8 @@ def selectBathroomsInBuilding(buildingID):
 # for bathroom in bathrooms:
 #     print(bathroom.buildingID, bathroom.bathroomName, bathroom.bathroomNumber, bathroom.floorNumber, '\t', bathroom.numReviews, bathroom.avgRating, bathroom.ratings)
 
-# Takes a bathroom, gives a list of Review objects
-def selectReviewsInBathroom(bathroomID, highestRated=False, lowestRated=False, newest=False, oldest=False):
+# Takes a bathroom, and sort, 0=>newest, 1=> oldest, 2=>highestRating, 3=>lowestRating gives a list of Review objects
+def selectReviewsInBathroom(bathroomID, sort):
     import sqlite3
 
     try:
@@ -369,13 +369,13 @@ def selectReviewsInBathroom(bathroomID, highestRated=False, lowestRated=False, n
 
         order = ''
 
-        if newest:
+        if sort == 0:
             order = 'Review.date DESC'
-        elif oldest:
+        elif sort == 1:
             order = 'Review.date ASC'
-        elif highestRated:
+        elif sort == 2:
             order = 'Upvotes DESC'
-        elif lowestRated:
+        elif sort == 3:
             order = 'Upvotes ASC'
 
 
@@ -407,6 +407,47 @@ def selectReviewsInBathroom(bathroomID, highestRated=False, lowestRated=False, n
             conn.close()
         return reviews
 # reviews = selectReviewsInBathroom('lvesW105C', oldest=True)
+# for review in reviews:
+#     print(review.date, review.upvotes, review.title, review.comments, review.rating, review.login)
+
+# Takes a bathroomID, and sort, 0=>newest, 1=> oldest, 2=>highestRating, 3=>lowestRating gives a list of Review objects
+def selectInfoAndReviewsInBathroom(bathroomID):
+    import sqlite3
+
+    try:
+        conn = sqlite3.connect('DoesItStinkBYUDataBase.db')
+        cursor = conn.cursor()
+
+        sqlSelectBathroomInfo = """SELECT buildingID, bathroomName, bathroomNumber, floorNumber,
+        (SELECT COUNT(*) AS Exp1 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID) AS numReviews,
+        (SELECT AVG(Rating.rating) AS Exp2 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID) AS avgRating,
+        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 5) AS numFiveReviews,
+        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 4) AS numFourReviews,
+        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 3) AS numThreeReviews,
+        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 2) AS numTwoReviews,
+        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 1) AS numOneReviews
+        FROM Bathroom
+        WHERE bathroomID = '""" + bathroomID + """'
+        ;"""
+        cursor.execute(sqlSelectBathroomInfo)
+
+        info = cursor.fetchone()
+        ratings = [info[6], info[7], info[8], info[9], info[10]]
+        bathroom = Bathroom(info[0], info[1], info[2], info[3], info[4], info[5], ratings)
+
+        reviews = selectReviewsInBathroom(bathroomID, 0)
+
+        conn.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print("Failed to work with database:", error)
+        return None
+    finally:
+        if (conn):
+            conn.close()
+    return bathroom, reviews
+# bathroom, reviews = selectInfoAndReviewsInBathroom('ellb113')
+# print(bathroom.buildingID, bathroom.bathroomName, bathroom.bathroomNumber, bathroom.floorNumber, bathroom.numReviews, bathroom.avgRating, bathroom.ratings)
 # for review in reviews:
 #     print(review.date, review.upvotes, review.title, review.comments, review.rating, review.login)
 
@@ -454,97 +495,6 @@ def insertRating(bathroomID, userID, rating):
         if (conn):
             conn.close()
 #insertRating('rb161L', 54, 2)
-
-# Allows a user to leave a review, will update rating and/or review if already exists
-def insertReview(bathroomID, userID, rating, title, comments):
-    import sqlite3
-    from datetime import datetime
-
-    # Case 1: User doesn't have a rating, nor a review
-    # Case 2: User has a rating, but not a review
-    # Case 3: User has a rating, and a review
-
-    try:
-        conn = sqlite3.connect('DoesItStinkBYUDataBase.db')
-        cursor = conn.cursor()
-
-        bathroomIDEdit = "'" + bathroomID + "'"
-        userIDEdit = "'" + str(userID) + "'"
-        ratingEdit = str(rating)
-        titleEdit = "'" + title + "'"
-        commentsEdit = "'" + comments + "'"
-
-        # Check if there's a rating
-        sqlSelect = """SELECT * FROM Rating
-        WHERE bathroomID = """ + bathroomIDEdit + """ AND userID = """ + userIDEdit
-
-        cursor.execute(sqlSelect)
-        ratings = None
-        ratings = cursor.fetchall()
-
-        # Case 1:
-        if len(ratings) == 0: # User doesn't have a rating
-            # Insert rating
-            sqlInsertRating = """INSERT INTO Rating
-            (bathroomID, userID, rating)
-            VALUES (?,?,?);"""
-            dataTupleRating = (bathroomID, userID, rating)
-            
-            cursor.execute(sqlInsertRating, dataTupleRating)
-
-            # Then grab that ratingID
-            sqlSelect = """SELECT * FROM Rating
-            WHERE bathroomID = """ + bathroomIDEdit + """ AND userID = """ + userIDEdit
-
-            cursor.execute(sqlSelect)
-            ratings = None
-            ratings = cursor.fetchall()
-
-            # And insert into review
-            sqlInsertReview = """INSERT INTO Review
-            (ratingID, title, comments, date)
-            VALUES (?,?,?,?);"""
-            now = datetime.now()
-            formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
-            dataTupleReview = (ratings[0][0], title, comments, formatted_date)
-            cursor.execute(sqlInsertReview, dataTupleReview)
-        else: #Case 2/3:
-            # Update rating
-            sqlUpdate = """UPDATE Rating
-            SET rating = """ + ratingEdit + """
-            WHERE bathroomID = """ + bathroomIDEdit + """ AND userID = """ + userIDEdit
-            cursor.execute(sqlUpdate)
-
-            #Now check for a review
-            sqlSelectReview = """SELECT * FROM Review
-            WHERE ratingID = """ + str(ratings[0][0])
-            cursor.execute(sqlSelectReview)
-            reviews = cursor.fetchall()
-
-            # Case 2
-            if len(reviews) != 0: # User had a review
-                # Delete Review
-                sqlUpdateReview = """DELETE FROM Review
-                WHERE ratingID = """ + str(ratings[0][0])
-                cursor.execute(sqlUpdateReview)
-
-            # Then Insert review
-            sqlInsertReview = """INSERT INTO Review
-            (ratingID, title, comments, date)
-            VALUES (?,?,?,?);"""
-            now = datetime.now()
-            formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
-            dataTupleReview = (ratings[0][0], title, comments,formatted_date)
-            cursor.execute(sqlInsertReview, dataTupleReview)
-
-        conn.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print("Failed to work with database:", error)
-    finally:
-        if (conn):
-            conn.close()
-# insertReview('rb161L', 55, 4, 'Great Bathroom', 'I really enjoyed using this bathroom a lot.')
 
 # Allows a user to like a review, will delete dislike if exists, also may delete like if already exists
 def insertLike(ratingID, userID):
@@ -648,3 +598,94 @@ def insertDislike(ratingID, userID):
         if (conn):
             conn.close()
 # insertDislike(2019, 54)
+
+# Allows a user to leave a review, will update rating and/or review if already exists
+def insertReview(bathroomID, userID, rating, title, comments):
+    import sqlite3
+    from datetime import datetime
+
+    # Case 1: User doesn't have a rating, nor a review
+    # Case 2: User has a rating, but not a review
+    # Case 3: User has a rating, and a review
+
+    try:
+        conn = sqlite3.connect('DoesItStinkBYUDataBase.db')
+        cursor = conn.cursor()
+
+        bathroomIDEdit = "'" + bathroomID + "'"
+        userIDEdit = "'" + str(userID) + "'"
+        ratingEdit = str(rating)
+        titleEdit = "'" + title + "'"
+        commentsEdit = "'" + comments + "'"
+
+        # Check if there's a rating
+        sqlSelect = """SELECT * FROM Rating
+        WHERE bathroomID = """ + bathroomIDEdit + """ AND userID = """ + userIDEdit
+
+        cursor.execute(sqlSelect)
+        ratings = None
+        ratings = cursor.fetchall()
+
+        # Case 1:
+        if len(ratings) == 0: # User doesn't have a rating
+            # Insert rating
+            sqlInsertRating = """INSERT INTO Rating
+            (bathroomID, userID, rating)
+            VALUES (?,?,?);"""
+            dataTupleRating = (bathroomID, userID, rating)
+            
+            cursor.execute(sqlInsertRating, dataTupleRating)
+
+            # Then grab that ratingID
+            sqlSelect = """SELECT * FROM Rating
+            WHERE bathroomID = """ + bathroomIDEdit + """ AND userID = """ + userIDEdit
+
+            cursor.execute(sqlSelect)
+            ratings = None
+            ratings = cursor.fetchall()
+
+            # And insert into review
+            sqlInsertReview = """INSERT INTO Review
+            (ratingID, title, comments, date)
+            VALUES (?,?,?,?);"""
+            now = datetime.now()
+            formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
+            dataTupleReview = (ratings[0][0], title, comments, formatted_date)
+            cursor.execute(sqlInsertReview, dataTupleReview)
+        else: #Case 2/3:
+            # Update rating
+            sqlUpdate = """UPDATE Rating
+            SET rating = """ + ratingEdit + """
+            WHERE bathroomID = """ + bathroomIDEdit + """ AND userID = """ + userIDEdit
+            cursor.execute(sqlUpdate)
+
+            #Now check for a review
+            sqlSelectReview = """SELECT * FROM Review
+            WHERE ratingID = """ + str(ratings[0][0])
+            cursor.execute(sqlSelectReview)
+            reviews = cursor.fetchall()
+
+            # Case 2
+            if len(reviews) != 0: # User had a review
+                # Delete Review
+                sqlUpdateReview = """DELETE FROM Review
+                WHERE ratingID = """ + str(ratings[0][0])
+                cursor.execute(sqlUpdateReview)
+
+            # Then Insert review
+            sqlInsertReview = """INSERT INTO Review
+            (ratingID, title, comments, date)
+            VALUES (?,?,?,?);"""
+            now = datetime.now()
+            formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
+            dataTupleReview = (ratings[0][0], title, comments,formatted_date)
+            cursor.execute(sqlInsertReview, dataTupleReview)
+
+        conn.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print("Failed to work with database:", error)
+    finally:
+        if (conn):
+            conn.close()
+# insertReview('rb161L', 55, 4, 'Great Bathroom', 'I really enjoyed using this bathroom a lot.')
