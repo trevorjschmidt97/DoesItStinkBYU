@@ -248,6 +248,39 @@ def deleteAllData():
     deleteAllBuildings()
     deleteAllUsers()
 
+def insertUser(login, password, email):
+    import sqlite3
+    success = True
+    try:
+        conn = sqlite3.connect('DoesItStinkBYUDataBase.db')
+        cursor = conn.cursor()
+
+        # check to see if the login exists
+        sqlSelect = """SELECT * FROM User
+        WHERE login = '""" + login + """';"""
+        cursor.execute(sqlSelect)
+
+        if len(cursor.fetchall()) == 0:
+            insert = """INSERT INTO User 
+            (login, password, email) 
+            VALUES (?,?,?);"""
+            dataTuple = (login, password, email)
+
+            cursor.execute(insert, dataTuple)
+        else:
+            success = False
+
+        conn.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print("Failed to insert Python variable into sqlite table:", error)
+    finally:
+        if (conn):
+            conn.close()
+    if not success:
+        return 'Error occured, login already taken, select new'
+# print(insertUser('holyschmidtty', 'ThisIsMyPassword', 'trevorjschmidt97@gmail.com'))
+
 # Returns all buildings in an list of Building Objects
 def selectAllBuildings():
     import sqlite3
@@ -615,4 +648,3 @@ def insertDislike(ratingID, userID):
         if (conn):
             conn.close()
 # insertDislike(2019, 54)
-
