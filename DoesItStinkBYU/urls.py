@@ -18,5 +18,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('mainMap.urls')),
+    path('selectAllBuildings', include('selectAllBuildings.urls')),
 ]

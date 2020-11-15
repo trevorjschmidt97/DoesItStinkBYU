@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mainMap.apps.MainmapConfig',
+    'selectAllBuildings.apps.SelectallbuildingsConfig',
 ]
 
 MIDDLEWARE = [
