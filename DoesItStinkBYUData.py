@@ -167,7 +167,6 @@ def selectAllDislikes():
             conn.close()
         return dislikes
 
-
 def deleteReview(bathroomID, userID):
     import sqlite3
 
