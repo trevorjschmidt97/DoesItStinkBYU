@@ -85,6 +85,88 @@ def selectAllReviews():
         if (conn):
             conn.close()
         return reviews
+def selectAllRatings():
+    import sqlite3
+
+    try:
+        conn = sqlite3.connect('DoesItStinkBYUDataBase.db')
+        cursor = conn.cursor()
+
+        sql = "SELECT * FROM Rating"
+
+        cursor.execute(sql)
+
+        rows = cursor.fetchall()
+
+        ratings = []
+        for row in rows:
+            rating = BasicRating(row[0], row[1], row[2], row[3])
+            ratings.append(rating)
+
+        conn.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print("Failed to work with database:", error)
+        return None
+    finally:
+        if (conn):
+            conn.close()
+        return ratings
+def selectAllLikes():
+    import sqlite3
+
+    try:
+        conn = sqlite3.connect('DoesItStinkBYUDataBase.db')
+        cursor = conn.cursor()
+
+        sql = "SELECT * FROM Like"
+
+        cursor.execute(sql)
+
+        rows = cursor.fetchall()
+
+        likes = []
+        for row in rows:
+            like = BasicLike(row[0], row[1])
+            likes.append(like)
+
+        conn.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print("Failed to work with database:", error)
+        return None
+    finally:
+        if (conn):
+            conn.close()
+        return likes
+def selectAllDislikes():
+    import sqlite3
+
+    try:
+        conn = sqlite3.connect('DoesItStinkBYUDataBase.db')
+        cursor = conn.cursor()
+
+        sql = "SELECT * FROM Dislike"
+
+        cursor.execute(sql)
+
+        rows = cursor.fetchall()
+
+        dislikes = []
+        for row in rows:
+            dislike = BasicDislike(row[0], row[1])
+            dislikes.append(dislike)
+
+        conn.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print("Failed to work with database:", error)
+        return None
+    finally:
+        if (conn):
+            conn.close()
+        return dislikes
+
 
 def deleteReview(bathroomID, userID):
     import sqlite3

@@ -23,6 +23,34 @@ class BasicReview:
                                'title': self.title,
                                'comments': self.comments,
                                'date': self.date}}
+                            
+class BasicRating:
+    def __init__(self, ratingID, bathroomID, userID, rating):
+        self.ratingID = ratingID
+        self.bathroomID = bathroomID
+        self.userID = userID
+        self.rating = rating
+    def dump(self):
+        return {'BasicRating': {'ratingID': self.ratingID,
+                                'bathroomID': self.bathroomID,
+                                'userID': self.userID,
+                                'rating': self.rating}}
+
+class BasicLike:
+    def __init__(self, ratingID, userID):
+        self.ratingID = ratingID
+        self.userID = userID
+    def dump(self):
+        return {'BasicLike': {'ratingID': self.ratingID,
+                              'userID': self.userID}}
+
+class BasicDislike:
+    def __init__(self, ratingID, userID):
+        self.ratingID = ratingID
+        self.userID = userID
+    def dump(self):
+        return {'BasicDislike': {'ratingID': self.ratingID,
+                              'userID': self.userID}}
 
 class User:
     def __init__(self, userID, login, password, email):
