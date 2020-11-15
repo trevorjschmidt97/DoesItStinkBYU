@@ -1,3 +1,7 @@
 from django.shortcuts import render
+from django.http import HttpResponse
+from DoesItStinkBYUData import insertLike
 
-# Create your views here.
+def indexPageView(request, ratingID, userID):
+    insertLike(ratingID, userID)
+    return HttpResponse()

@@ -1,5 +1,7 @@
-from django.shortcuts import render
 from django.http import HttpResponse
+from DoesItStinkBYUData import selectAllBuildings
+import json
 
 def indexPageView(request):
-    return HttpResponse('selectAllBuildings')
+    buildings = selectAllBuildings()
+    return HttpResponse(json.dumps([o.dump() for o in buildings]))

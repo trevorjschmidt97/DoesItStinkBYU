@@ -25,8 +25,7 @@ SECRET_KEY = 'yv3%du)f!qpuor-+30*=4gjgrjnv^2)d=a5yzti7vk)fqlsx+d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['127.0.0.1', '10.4.34.115']
 
 # Application definition
 
@@ -37,7 +36,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'insertDislike.apps.InsertdislikeConfig',
+    'insertLike.apps.InsertlikeConfig',
+    'insertRating.apps.InsertratingConfig',
+    'insertReview.apps.InsertreviewConfig',
+    'selectAllBathrooms.apps.SelectallbathroomsConfig',
     'selectAllBuildings.apps.SelectallbuildingsConfig',
+    'selectBathroomsInBuilding.apps.SelectbathroomsinbuildingConfig',
+    'selectInfoAndReviewsInBathroom.apps.SelectinfoandreviewsinbathroomConfig',
+    'selectReviewsInBathroom.apps.SelectreviewsinbathroomConfig',
 ]
 
 MIDDLEWARE = [

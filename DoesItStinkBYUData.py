@@ -445,7 +445,8 @@ def selectInfoAndReviewsInBathroom(bathroomID):
     finally:
         if (conn):
             conn.close()
-    return bathroom, reviews
+    return InfoAndReviews(bathroom, reviews)
+
 # bathroom, reviews = selectInfoAndReviewsInBathroom('ellb113')
 # print(bathroom.buildingID, bathroom.bathroomName, bathroom.bathroomNumber, bathroom.floorNumber, bathroom.numReviews, bathroom.avgRating, bathroom.ratings)
 # for review in reviews:

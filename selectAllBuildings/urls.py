@@ -2,5 +2,5 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('', indexPageView, name='selectAllBuildings')
+    path('', indexPageView, name='selectAllBuildings'),
 ]

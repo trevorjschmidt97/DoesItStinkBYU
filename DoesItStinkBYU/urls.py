@@ -18,5 +18,13 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('selectAllBuildings', include('selectAllBuildings.urls')),
+    path('insertDislike/', include('insertDislike.urls')),
+    path('insertLike/', include('insertLike.urls')),
+    path('insertRating/', include('insertRating.urls')),
+    path('insertReview/', include('insertReview.urls')),
+    path('selectAllBathrooms/', include('selectAllBathrooms.urls')),
+    path('selectAllBuildings/', include('selectAllBuildings.urls')),
+    path('selectBathroomsInBuilding/', include('selectBathroomsInBuilding.urls')),
+    path('selectInfoAndReviewsInBathroom/', include('selectInfoAndReviewsInBathroom.urls')),
+    path('selectReviewsInBathroom/', include('selectReviewsInBathroom.urls')),
 ]

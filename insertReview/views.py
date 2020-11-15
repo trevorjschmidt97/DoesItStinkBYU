@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from django.http import HttpResponse
+from DoesItStinkBYUData import insertReview
 
-# Create your views here.
+def indexPageView(request, bathroomID, userID, rating, title, comments):
+    insertReview(bathroomID, userID, rating, title, comments)
+    return HttpResponse()
