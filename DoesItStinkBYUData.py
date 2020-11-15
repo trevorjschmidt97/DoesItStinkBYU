@@ -359,7 +359,7 @@ def selectBathroomsInBuilding(buildingID):
 # for bathroom in bathrooms:
 #     print(bathroom.buildingID, bathroom.bathroomName, bathroom.bathroomNumber, bathroom.floorNumber, '\t', bathroom.numReviews, bathroom.avgRating, bathroom.ratings)
 
-# Takes a bathroom, and sort, 0=>newest, 1=> oldest, 2=>highestRating, 3=>lowestRating gives a list of Review objects
+# Takes a bathroom, and sort, gives a list of Review objects
 def selectReviewsInBathroom(bathroomID, sort):
     import sqlite3
 
@@ -369,13 +369,13 @@ def selectReviewsInBathroom(bathroomID, sort):
 
         order = ''
 
-        if sort == 0:
+        if sort == 'newest':
             order = 'Review.date DESC'
-        elif sort == 1:
+        elif sort == 'oldest':
             order = 'Review.date ASC'
-        elif sort == 2:
+        elif sort == 'highestRating':
             order = 'Upvotes DESC'
-        elif sort == 3:
+        elif sort == 'lowestRating':
             order = 'Upvotes ASC'
 
 
@@ -406,7 +406,7 @@ def selectReviewsInBathroom(bathroomID, sort):
         if (conn):
             conn.close()
         return reviews
-# reviews = selectReviewsInBathroom('lvesW105C', oldest=True)
+# reviews = selectReviewsInBathroom('lvesW105C', 'lowestRating')
 # for review in reviews:
 #     print(review.date, review.upvotes, review.title, review.comments, review.rating, review.login)
 
@@ -435,7 +435,7 @@ def selectInfoAndReviewsInBathroom(bathroomID):
         ratings = [info[6], info[7], info[8], info[9], info[10]]
         bathroom = Bathroom(info[0], info[1], info[2], info[3], info[4], info[5], ratings)
 
-        reviews = selectReviewsInBathroom(bathroomID, 0)
+        reviews = selectReviewsInBathroom(bathroomID, 'highestRating')
 
         conn.commit()
         cursor.close()
