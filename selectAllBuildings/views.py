@@ -4,4 +4,4 @@ import json
 
 def indexPageView(request):
     buildings = selectAllBuildings()
-    return HttpResponse(json.dumps([o.dump() for o in buildings]))
+    return HttpResponse("{\"Buildings\":" + json.dumps([building.dump() for building in buildings]) + '}')
