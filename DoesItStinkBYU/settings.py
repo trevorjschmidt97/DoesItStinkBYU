@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'home.apps.HomeConfig',
     'insertDislike.apps.InsertdislikeConfig',
     'insertLike.apps.InsertlikeConfig',
     'insertRating.apps.InsertratingConfig',
@@ -47,7 +48,7 @@ INSTALLED_APPS = [
     'selectAllRatings.apps.SelectallratingsConfig',
     'selectAllReviews.apps.SelectallreviewsConfig',
     'selectBathroomsInBuilding.apps.SelectbathroomsinbuildingConfig',
-    'selectInfoAndReviewsInBathroom.apps.SelectinfoandreviewsinbathroomConfig',
+    'selectInfoOfBathroom.apps.SelectinfoofbathroomConfig',
     'selectReviewsInBathroom.apps.SelectreviewsinbathroomConfig',
 ]
 

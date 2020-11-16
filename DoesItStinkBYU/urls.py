@@ -29,6 +29,7 @@ urlpatterns = [
     path('selectAllRatings/', include('selectAllRatings.urls')),
     path('selectAllReviews/', include('selectAllReviews.urls')),
     path('selectBathroomsInBuilding/', include('selectBathroomsInBuilding.urls')),
-    path('selectInfoAndReviewsInBathroom/', include('selectInfoAndReviewsInBathroom.urls')),
+    path('selectInfoOfBathroom/', include('selectInfoOfBathroom.urls')),
     path('selectReviewsInBathroom/', include('selectReviewsInBathroom.urls')),
+    path('', include('home.urls')),
 ]

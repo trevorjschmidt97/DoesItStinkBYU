@@ -84,15 +84,23 @@ class Bathroom:
         self.floorNumber = floorNumber
         self.numReviews = numReviews
         self.avgRating = avgRating
-        self.ratings = ratings #<= is a list of number of 5, 4, 3, 2, and 1 star ratings in that order
+        self.num5Reviews = ratings[0]
+        self.num4Reviews = ratings[1]
+        self.num3Reviews = ratings[2]
+        self.num2Reviews = ratings[3]
+        self.num1Reviews = ratings[4]
     def dump(self):
         return {"Bathroom": {'buildingID': self.buildingID,
-                               'bathroomName': self.bathroomName,
-                               'bathroomNumber': self.bathroomNumber,
-                               'floorNumber': self.floorNumber,
-                               'numReviews': self.numReviews,
-                               'avgRating': self.avgRating,
-                               'ratings': self.ratings}}
+                            'bathroomName': self.bathroomName,
+                            'bathroomNumber': self.bathroomNumber,
+                            'floorNumber': self.floorNumber,
+                            'numReviews': self.numReviews,
+                            'avgRating': self.avgRating,
+                            'num5Reviews': self.num5Reviews,
+                            'num4Reviews': self.num4Reviews,
+                            'num3Reviews': self.num3Reviews,
+                            'num2Reviews': self.num2Reviews,
+                            'num1Reviews': self.num1Reviews}}
 
 class Review:
     def __init__(self, title, comments, date, rating, login, upvotes):
@@ -110,12 +118,4 @@ class Review:
                                'login': self.login,
                                'upvotes': self.upvotes}}
 
-class InfoAndReviews:
-    def __init__(self, bathroom, reviews):
-        self.bathroom = bathroom
-        self.reviews = reviews
-    def dump(self):
-        import json
-        return {"InfoAndReviews": {'bathroom': self.bathroom,
-                               'reviews': self.reviews}}
 

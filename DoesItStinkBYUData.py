@@ -492,7 +492,7 @@ def selectReviewsInBathroom(bathroomID, sort):
 #     print(review.date, review.upvotes, review.title, review.comments, review.rating, review.login)
 
 # Takes a bathroomID, and sort, 0=>newest, 1=> oldest, 2=>highestRating, 3=>lowestRating gives a list of Review objects
-def selectInfoAndReviewsInBathroom(bathroomID):
+def selectInfoOfBathroom(bathroomID):
     import sqlite3
 
     try:
@@ -516,8 +516,6 @@ def selectInfoAndReviewsInBathroom(bathroomID):
         ratings = [info[6], info[7], info[8], info[9], info[10]]
         bathroom = Bathroom(info[0], info[1], info[2], info[3], info[4], info[5], ratings)
 
-        reviews = selectReviewsInBathroom(bathroomID, 'highestRating')
-
         conn.commit()
         cursor.close()
     except sqlite3.Error as error:
@@ -526,7 +524,7 @@ def selectInfoAndReviewsInBathroom(bathroomID):
     finally:
         if (conn):
             conn.close()
-    return InfoAndReviews(bathroom, reviews)
+    return bathroom
 
 # bathroom, reviews = selectInfoAndReviewsInBathroom('ellb113')
 # print(bathroom.buildingID, bathroom.bathroomName, bathroom.bathroomNumber, bathroom.floorNumber, bathroom.numReviews, bathroom.avgRating, bathroom.ratings)
