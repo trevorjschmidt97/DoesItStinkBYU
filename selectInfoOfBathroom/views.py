@@ -5,4 +5,4 @@ import json
 
 def indexPageView(request, bathroomID):
     info = selectInfoOfBathroom(bathroomID)
-    return HttpResponse(json.dumps(info.dump()))
+    return HttpResponse("{\"info\": " + json.dumps(info.dump()) + "}")

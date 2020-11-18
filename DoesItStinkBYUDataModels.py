@@ -6,11 +6,11 @@ class BasicBathroom:
         self.bathroomNumber = bathroomNumber
         self.floorNumber = floorNumber
     def dump(self):
-        return {"BasicBathroom": {'bathroomID': self.bathroomID,
-                               'buildingID': self.buildingID,
-                               'bathroomName': self.bathroomName,
-                               'bathroomNumber': self.bathroomNumber,
-                               'floorNumber': self.floorNumber}}
+        return {'bathroomID': self.bathroomID,
+                'buildingID': self.buildingID,
+                'bathroomName': self.bathroomName,
+                'bathroomNumber': self.bathroomNumber,
+                'floorNumber': self.floorNumber}
         
 class BasicReview:
     def __init__(self, ratingID, title, comments, date):
@@ -19,10 +19,10 @@ class BasicReview:
         self.comments = comments
         self.date = date
     def dump(self):
-        return {"BasicReview": {'ratingID': self.ratingID,
-                               'title': self.title,
-                               'comments': self.comments,
-                               'date': self.date}}
+        return {'ratingID': self.ratingID,
+                'title': self.title,
+                'comments': self.comments,
+                'date': self.date}
                             
 class BasicRating:
     def __init__(self, ratingID, bathroomID, userID, rating):
@@ -31,26 +31,26 @@ class BasicRating:
         self.userID = userID
         self.rating = rating
     def dump(self):
-        return {'BasicRating': {'ratingID': self.ratingID,
-                                'bathroomID': self.bathroomID,
-                                'userID': self.userID,
-                                'rating': self.rating}}
+        return {'ratingID': self.ratingID,
+                'bathroomID': self.bathroomID,
+                'userID': self.userID,
+                'rating': self.rating}
 
 class BasicLike:
     def __init__(self, ratingID, userID):
         self.ratingID = ratingID
         self.userID = userID
     def dump(self):
-        return {'BasicLike': {'ratingID': self.ratingID,
-                              'userID': self.userID}}
+        return {'ratingID': self.ratingID,
+                'userID': self.userID}
 
 class BasicDislike:
     def __init__(self, ratingID, userID):
         self.ratingID = ratingID
         self.userID = userID
     def dump(self):
-        return {'BasicDislike': {'ratingID': self.ratingID,
-                              'userID': self.userID}}
+        return {'ratingID': self.ratingID,
+                'userID': self.userID}
 
 class User:
     def __init__(self, userID, login, password, email):
@@ -59,10 +59,10 @@ class User:
         self.password = password
         self.email = email
     def dump(self):
-        return {"User": {'userID': self.userID,
-                            'login': self.login,
-                            'password': self.password,
-                            'email': self.email}}
+        return {'userID': self.userID,
+                'login': self.login,
+                'password': self.password,
+                'email': self.email}
 
 class Building:
     def __init__(self, buildingID, fullBuildingName, buildingLocationLat, buildingLocationLong):
@@ -71,10 +71,10 @@ class Building:
         self.buildingLocationLat = buildingLocationLat
         self.buildingLocationLong = buildingLocationLong
     def dump(self):
-        return {"Building": {'buildingID': self.buildingID,
-                               'fullBuildingName': self.fullBuildingName,
-                               'buildingLocationLat': self.buildingLocationLat,
-                               'buildingLocationLong': self.buildingLocationLong}}
+        return {'buildingID': self.buildingID,
+                'fullBuildingName': self.fullBuildingName,
+                'buildingLocationLat': self.buildingLocationLat,
+                'buildingLocationLong': self.buildingLocationLong}
 
 class Bathroom:
     def __init__(self, buildingID, bathroomName, bathroomNumber, floorNumber, numReviews, avgRating, ratings):
@@ -90,17 +90,17 @@ class Bathroom:
         self.num2Reviews = ratings[3]
         self.num1Reviews = ratings[4]
     def dump(self):
-        return {"Bathroom": {'buildingID': self.buildingID,
-                            'bathroomName': self.bathroomName,
-                            'bathroomNumber': self.bathroomNumber,
-                            'floorNumber': self.floorNumber,
-                            'numReviews': self.numReviews,
-                            'avgRating': self.avgRating,
-                            'num5Reviews': self.num5Reviews,
-                            'num4Reviews': self.num4Reviews,
-                            'num3Reviews': self.num3Reviews,
-                            'num2Reviews': self.num2Reviews,
-                            'num1Reviews': self.num1Reviews}}
+        return {'buildingID': self.buildingID,
+                'bathroomName': self.bathroomName,
+                'bathroomNumber': self.bathroomNumber,
+                'floorNumber': self.floorNumber,
+                'numReviews': self.numReviews,
+                'avgRating': self.avgRating,
+                'num5Reviews': self.num5Reviews,
+                'num4Reviews': self.num4Reviews,
+                'num3Reviews': self.num3Reviews,
+                'num2Reviews': self.num2Reviews,
+                'num1Reviews': self.num1Reviews}
 
 class Review:
     def __init__(self, title, comments, date, rating, login, upvotes):
@@ -111,11 +111,11 @@ class Review:
         self.login = login
         self.upvotes = upvotes
     def dump(self):
-        return {"Review": {'title': self.title,
-                               'comments': self.comments,
-                               'date': self.date,
-                               'rating': self.rating,
-                               'login': self.login,
-                               'upvotes': self.upvotes}}
+        return {'title': self.title,
+                'comments': self.comments,
+                'date': self.date,
+                'rating': self.rating,
+                'login': self.login,
+                'upvotes': self.upvotes}
 
 

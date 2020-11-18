@@ -4,4 +4,4 @@ import json
 
 def indexPageView(request):
     reviews = selectAllReviews()
-    return HttpResponse(json.dumps([o.dump() for o in reviews]))
+    return HttpResponse("{\"reviews\": " + json.dumps([o.dump() for o in reviews])+"}")

@@ -4,4 +4,4 @@ import json
 
 def indexPageView(request):
     likes = selectAllLikes()
-    return HttpResponse(json.dumps([o.dump() for o in likes]))
+    return HttpResponse("{\"likes\": " + json.dumps([o.dump() for o in likes])+ "}")
