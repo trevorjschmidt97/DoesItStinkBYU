@@ -535,6 +535,8 @@ def selectInfoOfBathroom(bathroomID):
 def insertRating(bathroomID, userID, rating):
     import sqlite3
 
+    returnString = ""
+
     # If user already has a rating for that bathroom, only update,
     # else insert
     try:
@@ -561,24 +563,30 @@ def insertRating(bathroomID, userID, rating):
         ratings = cursor.fetchall()
 
         if len(ratings) > 0:
+            returnString = "Rating updated"
             # Then update
             cursor.execute(sqlUpdate)
         else:
             # Simply insert
+            returnString = "Rating inserted"
             cursor.execute(sqlInsert, dataTuple)
 
         conn.commit()
         cursor.close()
     except sqlite3.Error as error:
         print("Failed to work with database:", error)
+        return "Failed to work with insertion of rating into db"
     finally:
         if (conn):
             conn.close()
+            return returnString
 #insertRating('rb161L', 54, 2)
 
 # Allows a user to like a review, will delete dislike if exists, also may delete like if already exists
 def insertLike(ratingID, userID):
     import sqlite3
+
+    returnString = ""
 
     # CASE 1: User hasn't liked nor disliked the review => Insert like
     # CASE 2: User has liked the review, so liking again will delete the like => Delete Like
@@ -609,10 +617,13 @@ def insertLike(ratingID, userID):
 
         if len(likes) == 0 and len(dislikes) == 0:
             #CASE 1
+            returnString = "Like inserted"
             cursor.execute(sqlInsertLike, insertLikeDataTuple)
         elif len(likes) != 0 and len(dislikes) == 0:
+            returnString = "Like deleted"
             cursor.execute(sqlDeleteLike)
         elif len(likes) == 0 and len(dislikes) != 0:
+            returnString = "Dislike deleted, like inserted"
             cursor.execute(sqlDeleteDislike)
             cursor.execute(sqlInsertLike,insertLikeDataTuple)
 
@@ -620,15 +631,18 @@ def insertLike(ratingID, userID):
         cursor.close()
     except sqlite3.Error as error:
         print("Failed to work with database:", error)
-        return None
+        return "Failed to insert like into db"
     finally:
         if (conn):
             conn.close()
+            return returnString
 #insertLike(2019, 53)
 
 # Allows a user to dislike a review, will delete like if exists, also may delete dislike if already exists
 def insertDislike(ratingID, userID):
     import sqlite3
+
+    returnString = ""
 
     # CASE 1: User hasn't liked nor disliked the review => Insert Dislike
     # CASE 2: User has disliked the review => Delete Dislike
@@ -659,12 +673,16 @@ def insertDislike(ratingID, userID):
 
         if len(likes) == 0 and len(dislikes) == 0:
             #CASE 1
+            returnString = "Dislike inserted"
             cursor.execute(sqlInsertDislike, insertDislikeDataTuple)
+
         elif len(likes) == 0 and len(dislikes) != 0:
             #case 2
+            returnString = "Dislike deleted"
             cursor.execute(sqlDeleteDislike)
         elif len(likes) != 0 and len(dislikes) == 0:
             #case 3
+            returnString = "Like deleted, dislike inserted"
             cursor.execute(sqlDeleteLike)
             cursor.execute(sqlInsertDislike, insertDislikeDataTuple)
         
@@ -673,16 +691,19 @@ def insertDislike(ratingID, userID):
         cursor.close()
     except sqlite3.Error as error:
         print("Failed to work with database:", error)
-        return None
+        return "Error pushing dislike to db"
     finally:
         if (conn):
             conn.close()
+            return returnString
 # insertDislike(2019, 54)
 
 # Allows a user to leave a review, will update rating and/or review if already exists
 def insertReview(bathroomID, userID, rating, title, comments):
     import sqlite3
     from datetime import datetime
+
+    returnString = ""
 
     # Case 1: User doesn't have a rating, nor a review
     # Case 2: User has a rating, but not a review
@@ -708,6 +729,7 @@ def insertReview(bathroomID, userID, rating, title, comments):
 
         # Case 1:
         if len(ratings) == 0: # User doesn't have a rating
+            returnString = "Rating and Review inserted"
             # Insert rating
             sqlInsertRating = """INSERT INTO Rating
             (bathroomID, userID, rating)
@@ -733,6 +755,7 @@ def insertReview(bathroomID, userID, rating, title, comments):
             dataTupleReview = (ratings[0][0], title, comments, formatted_date)
             cursor.execute(sqlInsertReview, dataTupleReview)
         else: #Case 2/3:
+            returnString = "Rating updated"
             # Update rating
             sqlUpdate = """UPDATE Rating
             SET rating = """ + ratingEdit + """
@@ -747,10 +770,13 @@ def insertReview(bathroomID, userID, rating, title, comments):
 
             # Case 2
             if len(reviews) != 0: # User had a review
+                returnString += " and review updated"
                 # Delete Review
                 sqlUpdateReview = """DELETE FROM Review
                 WHERE ratingID = """ + str(ratings[0][0])
                 cursor.execute(sqlUpdateReview)
+            else:
+                returnString += " and review inserted"
 
             # Then Insert review
             sqlInsertReview = """INSERT INTO Review
@@ -765,7 +791,9 @@ def insertReview(bathroomID, userID, rating, title, comments):
         cursor.close()
     except sqlite3.Error as error:
         print("Failed to work with database:", error)
+        return "Failed to insert review into db"
     finally:
         if (conn):
             conn.close()
+            return returnString
 # insertReview('rb161L', 55, 4, 'Great Bathroom', 'I really enjoyed using this bathroom a lot.')

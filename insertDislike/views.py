@@ -3,5 +3,5 @@ from django.http import HttpResponse
 from DoesItStinkBYUData import insertDislike
 
 def indexPageView(request, ratingID, userID):
-    insertDislike(ratingID, userID)
-    return HttpResponse()
+    resultString = insertDislike(ratingID, userID)
+    return HttpResponse("{\"result\": {\"resultString\":\"" + resultString + "\"} }")

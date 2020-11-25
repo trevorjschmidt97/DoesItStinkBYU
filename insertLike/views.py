@@ -3,5 +3,5 @@ from django.http import HttpResponse
 from DoesItStinkBYUData import insertLike
 
 def indexPageView(request, ratingID, userID):
-    insertLike(ratingID, userID)
-    return HttpResponse()
+    resultString = insertLike(ratingID, userID)
+    return HttpResponse("{\"result\": {\"resultString\":\"" + resultString + "\"} }")
