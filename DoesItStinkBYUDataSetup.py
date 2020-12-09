@@ -20,7 +20,7 @@ class Person:
         import string
         import secrets
 
-        print('\tCreating Random Person Data')
+        # print('\tCreating Random Person Data')
         self.mnames = []
         with open('mnames.json') as json_file:
             data = json.load(json_file)
@@ -66,6 +66,20 @@ class Person:
 
 def populateAllBuildings():
     allBuildings = []
+
+    wvb = Building()
+    wvb.buildingID = "WVB"
+    wvb.fullBuildingName = "West View Building"
+    wvb.buildingLocationLat = 40.248800
+    wvb.buildingLocationLong = -111.652154
+    allBuildings.append(wvb)
+
+    slc = Building()
+    slc.buildingID = "SLC"
+    slc.fullBuildingName = "Salt Lake Center"
+    slc.buildingLocationLat = 40.771149
+    slc.buildingLocationLong = -111.901127
+    allBuildings.append(slc)
 
     ellb = Building()
     ellb.buildingID = "ELLB"
@@ -244,7 +258,7 @@ def populateAllBuildings():
 
     hfac = Building()
     hfac.buildingID = "HFAC"
-    hfac.fullBuildingName = "FRANKLIN S. HARRIS FINE ARTS CENTER"
+    hfac.fullBuildingName = "Franklin S. Harris Fine Arts Center"
     hfac.buildingLocationLat = 40.249971 
     hfac.buildingLocationLong = -111.648000
     allBuildings.append(hfac)
@@ -306,7 +320,7 @@ def populateAllBuildings():
     allBuildings.append(msrb)
 
     hgb = Building()
-    hgb.buildingID = "hgb"
+    hgb.buildingID = "HGB"
     hgb.fullBuildingName = "Heber J. Grant Building"
     hgb.buildingLocationLat = 40.245467 
     hgb.buildingLocationLong = -111.652476
@@ -469,6 +483,127 @@ def populateAllBuildings():
     return allBuildings
 def populateBathrooms():
     allBathrooms =[]
+
+    # WVB BUILDING
+    wvb1141A = Bathroom(bathroomID="wvb1141A", buildingID="wvb", bathroomName="Men's Restroom", bathroomNumber="1141A", floorNumber=1)
+    allBathrooms.append(wvb1141A)
+
+    wvb1145 = Bathroom(bathroomID="wvb1145", buildingID="wvb", bathroomName="Single Use Restroom", bathroomNumber="1145", floorNumber=1)
+    allBathrooms.append(wvb1145)
+
+    wvb1147A = Bathroom(bathroomID="wvb1147A", buildingID="wvb", bathroomName="Women's Restroom", bathroomNumber="1147A", floorNumber=1)
+    allBathrooms.append(wvb1147A)
+
+    wvb2159B = Bathroom(bathroomID="wvb2159B", buildingID="wvb", bathroomName="Men's Restroom", bathroomNumber="2159B", floorNumber=2)
+    allBathrooms.append(wvb2159B)
+
+    wvb2159F = Bathroom(bathroomID="wvb2159F", buildingID="wvb", bathroomName="Women's Restroom", bathroomNumber="2159F", floorNumber=2)
+    allBathrooms.append(wvb2159F)
+
+    # SLC BUILDING
+    slc350 = Bathroom(bathroomID="slc350", buildingID="slc", bathroomName="Men's Restroom", bathroomNumber="350", floorNumber=3)
+    allBathrooms.append(slc350)
+
+    slc351 = Bathroom(bathroomID="slc351", buildingID="slc", bathroomName="Women's Restroom", bathroomNumber="351", floorNumber=3)
+    allBathrooms.append(slc351)
+
+    slc356 = Bathroom(bathroomID="slc356", buildingID="slc", bathroomName="Men's Restroom", bathroomNumber="356", floorNumber=3)
+    allBathrooms.append(slc356)
+
+    slc365 = Bathroom(bathroomID="slc365", buildingID="slc", bathroomName="Women's Restroom", bathroomNumber="365", floorNumber=3)
+    allBathrooms.append(slc365)
+
+    slc450 = Bathroom(bathroomID="slc450", buildingID="slc", bathroomName="Men's Restroom", bathroomNumber="450", floorNumber=3)
+    allBathrooms.append(slc450)
+
+    slc451 = Bathroom(bathroomID="slc451", buildingID="slc", bathroomName="Women's Restroom", bathroomNumber="451", floorNumber=4)
+    allBathrooms.append(slc451)
+
+    slc456 = Bathroom(bathroomID="slc456", buildingID="slc", bathroomName="Men's Restroom", bathroomNumber="456", floorNumber=4)
+    allBathrooms.append(slc456)
+
+    slc465 = Bathroom(bathroomID="slc465", buildingID="slc", bathroomName="Women's Restroom", bathroomNumber="465", floorNumber=4)
+    allBathrooms.append(slc465)
+
+    # RMB BUILDING
+    rmb109A = Bathroom(bathroomID="rmb109A", buildingID="rmb", bathroomName="Single Use Restroom", bathroomNumber="109A", floorNumber=1)
+    allBathrooms.append(rmb109A)
+
+    rmb109B = Bathroom(bathroomID="rmb109B", buildingID="rmb", bathroomName="Men's Restroom", bathroomNumber="109B", floorNumber=1)
+    allBathrooms.append(rmb109B)
+
+    rmb109E = Bathroom(bathroomID="rmb109E", buildingID="rmb", bathroomName="Women's Restroom", bathroomNumber="109E", floorNumber=1)
+    allBathrooms.append(rmb109E)
+
+    #TMCB BUILDING
+    tmcb102 = Bathroom(bathroomID="tmcb102", buildingID="tmcb", bathroomName="Men's Restroom", bathroomNumber="102", floorNumber=1)
+    allBathrooms.append(tmcb102)
+
+    tmcb115 = Bathroom(bathroomID="tmcb115", buildingID="tmcb", bathroomName="Women's Restroom", bathroomNumber="115", floorNumber=1)
+    allBathrooms.append(tmcb115)
+
+    tmcb182 = Bathroom(bathroomID="tmcb182", buildingID="tmcb", bathroomName="Restroom Vestibule", bathroomNumber="182", floorNumber=1)
+    allBathrooms.append(tmcb182)
+
+    tmcb182A = Bathroom(bathroomID="tmcb182A", buildingID="tmcb", bathroomName="Men's Restroom", bathroomNumber="182A", floorNumber=1)
+    allBathrooms.append(tmcb182A)
+
+    tmcb195 = Bathroom(bathroomID="tmcb195", buildingID="tmcb", bathroomName="Women's Restroom", bathroomNumber="195", floorNumber=1)
+    allBathrooms.append(tmcb195)
+
+    tmcb1041 = Bathroom(bathroomID="tmcb1041", buildingID="tmcb", bathroomName="Men's Restroom", bathroomNumber="1041", floorNumber=1)
+    allBathrooms.append(tmcb1041)
+
+    tmcb1045 = Bathroom(bathroomID="tmcb1045", buildingID="tmcb", bathroomName="Women's Restroom", bathroomNumber="1045", floorNumber=1)
+    allBathrooms.append(tmcb1045)
+
+    tmcb1051 = Bathroom(bathroomID="tmcb1051", buildingID="tmcb", bathroomName="Single Use Restroom", bathroomNumber="1051", floorNumber=1)
+    allBathrooms.append(tmcb1051)
+
+    tmcb1101 = Bathroom(bathroomID="tmcb1101", buildingID="tmcb", bathroomName="Women's Restroom", bathroomNumber="1101", floorNumber=1)
+    allBathrooms.append(tmcb1101)
+
+    tmcb1105 = Bathroom(bathroomID="tmcb1105", buildingID="tmcb", bathroomName="Men's Restroom", bathroomNumber="1105", floorNumber=1)
+    allBathrooms.append(tmcb1105)
+
+    tmcb1151 = Bathroom(bathroomID="tmcb1151", buildingID="tmcb", bathroomName="Single Use Restroom", bathroomNumber="1151", floorNumber=1)
+    allBathrooms.append(tmcb1151)
+
+    tmcbU142 = Bathroom(bathroomID="tmcbU142", buildingID="tmcb", bathroomName="Women's Restroom", bathroomNumber="U142", floorNumber=1)
+    allBathrooms.append(tmcbU142)
+
+    tmcbU144 = Bathroom(bathroomID="tmcbU144", buildingID="tmcb", bathroomName="Men's Restroom", bathroomNumber="U144", floorNumber=1)
+    allBathrooms.append(tmcbU144)
+
+    tmcb248 = Bathroom(bathroomID="tmcb248", buildingID="tmcb", bathroomName="Women's Restroom", bathroomNumber="248", floorNumber=2)
+    allBathrooms.append(tmcb248)
+
+    tmcb272 = Bathroom(bathroomID="tmcb272", buildingID="tmcb", bathroomName="Men's Restroom", bathroomNumber="272", floorNumber=2)
+    allBathrooms.append(tmcb272)
+
+    tmcb2201 = Bathroom(bathroomID="tmcb2201", buildingID="tmcb", bathroomName="Women's Restroom", bathroomNumber="2201", floorNumber=2)
+    allBathrooms.append(tmcb2201)
+
+    tmcb2205 = Bathroom(bathroomID="tmcb2205", buildingID="tmcb", bathroomName="Men's Restroom", bathroomNumber="2205", floorNumber=2)
+    allBathrooms.append(tmcb2205)
+
+    tmcb2259 = Bathroom(bathroomID="tmcb2259", buildingID="tmcb", bathroomName="Single Use Restroom", bathroomNumber="2259", floorNumber=2)
+    allBathrooms.append(tmcb2259)
+
+    tmcb354 = Bathroom(bathroomID="tmcb354", buildingID="tmcb", bathroomName="Men's Restroom", bathroomNumber="354", floorNumber=3)
+    allBathrooms.append(tmcb354)
+
+    tmcb355 = Bathroom(bathroomID="tmcb355", buildingID="tmcb", bathroomName="Women's Restroom", bathroomNumber="355", floorNumber=3)
+    allBathrooms.append(tmcb355)
+
+    tmcb3301 = Bathroom(bathroomID="tmcb3301", buildingID="tmcb", bathroomName="Women's Restroom", bathroomNumber="3301", floorNumber=3)
+    allBathrooms.append(tmcb3301)
+
+    tmcb3305 = Bathroom(bathroomID="tmcb3305", buildingID="tmcb", bathroomName="Men's Restroom", bathroomNumber="3305", floorNumber=3)
+    allBathrooms.append(tmcb3305)
+
+    tmcb3367 = Bathroom(bathroomID="tmtmcb3367cb", buildingID="tmcb", bathroomName="Single Use Restroom", bathroomNumber="3367", floorNumber=3)
+    allBathrooms.append(tmcb3367)
 
     # ELLB BUILDING
     ellb110 = Bathroom(bathroomID="ellb110", buildingID="ellb", bathroomName="Men's/Single Use Restroom/Storage", bathroomNumber="110", floorNumber=1)
@@ -1130,7 +1265,7 @@ def populateBathrooms():
     asbA36 = Bathroom(bathroomID="asbA36", buildingID="asb", bathroomName="Restroom Vestibule", bathroomNumber="A36", floorNumber=0)
     allBathrooms.append(asbA36)
 
-    asbA36A = Bathroom(bathroomID="asbA36A", buildingID="asb", bathroomName="Men's             Restroom", bathroomNumber="A36A", floorNumber=0)
+    asbA36A = Bathroom(bathroomID="asbA36A", buildingID="asb", bathroomName="Men's Restroom", bathroomNumber="A36A", floorNumber=0)
     allBathrooms.append(asbA36A)
 
     asbB39 = Bathroom(bathroomID="asbB39", buildingID="asb", bathroomName="Women's Lounge", bathroomNumber="B39", floorNumber=0)
@@ -2701,12 +2836,12 @@ def insertBuildings():
     import sqlite3
     for building in allBuildings:
         data_tuple = (building.buildingID, building.fullBuildingName, building.buildingLocationLat, building.buildingLocationLong)
-        print('Attempting to insert', building.buildingID, building.buildingLocationLat, 'into db')
+        # print('Attempting to insert', building.buildingID, building.buildingLocationLat, 'into db')
 
         try:
             conn = sqlite3.connect('DoesItStinkBYUDataBase.db')
             cursor = conn.cursor()
-            print("\tConnected to db")
+            # print("\tConnected to db")
 
             insert = """INSERT INTO Building 
             (buildingID, fullBuildingName, buildingLocationLat, buildingLocationLong) 
@@ -2717,7 +2852,7 @@ def insertBuildings():
 
             conn.commit()
             cursor.close()
-            print('\tSuccessfully added account info to db')
+            # print('\tSuccessfully added account info to db')
         except sqlite3.Error as error:
             print("Failed to insert Python variable into sqlite table:", error)
         finally:
@@ -2729,12 +2864,12 @@ def insertBathrooms():
     import sqlite3
     for bathroom in allBathrooms:
         data_tuple = (bathroom.bathroomID, bathroom.buildingID.upper(), bathroom.bathroomName, bathroom.bathroomNumber, bathroom.floorNumber)
-        print('Attempting to insert', bathroom.bathroomID, 'into db')
+        # print('Attempting to insert', bathroom.bathroomID, 'into db')
 
         try:
             conn = sqlite3.connect('DoesItStinkBYUDataBase.db')
             cursor = conn.cursor()
-            print("\tConnected to db")
+            # print("\tConnected to db")
 
             insert = """INSERT INTO Bathroom 
             (bathroomID, buildingID, bathroomName, bathroomNumber, floorNumber) 
@@ -2745,7 +2880,7 @@ def insertBathrooms():
 
             conn.commit()
             cursor.close()
-            print('\tSuccessfully added account info to db')
+            # print('\tSuccessfully added account info to db')
         except sqlite3.Error as error:
             print("Failed to insert Python variable into sqlite table", error)
             print(data_tuple)
@@ -2763,12 +2898,12 @@ def insertFakeUsers(numUsers):
         users.append(user)
 
     for user in users:
-        print('Attempting to insert', user[0], 'into db')
+        # print('Attempting to insert', user[0], 'into db')
 
         try:
             conn = sqlite3.connect('DoesItStinkBYUDataBase.db')
             cursor = conn.cursor()
-            print("\tConnected to db")
+            # print("\tConnected to db")
 
             insert = """INSERT INTO User 
             (login, password, email) 
@@ -2778,7 +2913,7 @@ def insertFakeUsers(numUsers):
 
             conn.commit()
             cursor.close()
-            print('\tSuccessfully added account info to db')
+            # print('\tSuccessfully added account info to db')
         except sqlite3.Error as error:
             print("Failed to insert Python variable into sqlite table:", error)
         finally:

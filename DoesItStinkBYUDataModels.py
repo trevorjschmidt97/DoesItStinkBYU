@@ -77,11 +77,27 @@ class Building:
                 'buildingLocationLong': self.buildingLocationLong}
 
 class Bathroom:
-    def __init__(self, buildingID, bathroomName, bathroomNumber, floorNumber, numReviews, avgRating, ratings):
+    def __init__(self, buildingID, bathroomName, bathroomNumber, floorNumber, numReviews, avgRating):
         self.buildingID = buildingID
         self.bathroomName = bathroomName
         self.bathroomNumber = bathroomNumber
         self.floorNumber = floorNumber
+        self.numReviews = numReviews
+        self.avgRating = avgRating
+        
+    def dump(self):
+        return {'buildingID': self.buildingID,
+                'bathroomName': self.bathroomName,
+                'bathroomNumber': self.bathroomNumber,
+                'floorNumber': self.floorNumber,
+                'numReviews': self.numReviews,
+                'avgRating': self.avgRating}
+
+class Info: 
+    def __init__(self, buildingID, bathroomName, bathroomNumber, numReviews, avgRating, ratings, userRating):
+        self.buildingID = buildingID
+        self.bathroomName = bathroomName
+        self.bathroomNumber = bathroomNumber
         self.numReviews = numReviews
         self.avgRating = avgRating
         self.num5Reviews = ratings[0]
@@ -89,33 +105,52 @@ class Bathroom:
         self.num3Reviews = ratings[2]
         self.num2Reviews = ratings[3]
         self.num1Reviews = ratings[4]
+        self.userRating = userRating
+
     def dump(self):
         return {'buildingID': self.buildingID,
                 'bathroomName': self.bathroomName,
                 'bathroomNumber': self.bathroomNumber,
-                'floorNumber': self.floorNumber,
                 'numReviews': self.numReviews,
                 'avgRating': self.avgRating,
                 'num5Reviews': self.num5Reviews,
                 'num4Reviews': self.num4Reviews,
                 'num3Reviews': self.num3Reviews,
                 'num2Reviews': self.num2Reviews,
-                'num1Reviews': self.num1Reviews}
+                'num1Reviews': self.num1Reviews,
+                'userRating': self.userRating}
 
 class Review:
-    def __init__(self, title, comments, date, rating, login, upvotes):
+    def __init__(self, ratingID, title, comments, date, rating, login, upvotes, userLiked, userDisliked):
+        self.ratingID = ratingID
         self.title = title
         self.comments = comments
         self.date = date
         self.rating = rating
         self.login = login
         self.upvotes = upvotes
+        self.userLiked = userLiked
+        self.userDisliked = userDisliked
     def dump(self):
-        return {'title': self.title,
+        return {'ratingID': self.ratingID,
+                'title': self.title,
                 'comments': self.comments,
                 'date': self.date,
                 'rating': self.rating,
                 'login': self.login,
+                'upvotes': self.upvotes,
+                'userLiked': self.userLiked,
+                'userDisliked': self.userDisliked}
+
+class Leader:
+    def __init__(self, username, upvotes):
+        self.username = username
+        self.upvotes = upvotes
+    def dump(self):
+        return {'username': self.username,
                 'upvotes': self.upvotes}
+    def __str__(self) -> str:
+        return str(self.username) + " " + str(self.upvotes)
+
 
 

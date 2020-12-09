@@ -1,5 +1,24 @@
-{ 
-  "result": { 
-    "resultString": "Rating updated" 
-  } 
+{
+  "leaders": [
+    { "username": "salinakelson3607907", "upvotes": 45 },
+    { "username": "jakehousman2857500", "upvotes": 5 },
+    { "username": "kristyocheltree597612", "upvotes": 4 },
+    { "username": "belindakissee8738792", "upvotes": 0 },
+    { "username": "luanalivingston5937688", "upvotes": -4 },
+    { "username": "agustinrakes2422122", "upvotes": -9 },
+    { "username": "woodrowcullinan8960934", "upvotes": -11 },
+    { "username": "irvingvillegas2290827", "upvotes": -12 },
+    { "username": "bartonmcdougald138207", "upvotes": -13 },
+    { "username": "daysiackerley4060931", "upvotes": -13 },
+    { "username": "andreemandelbaum5496928", "upvotes": -14 },
+    { "username": "haileychiang3287613", "upvotes": -15 },
+    { "username": "deedeeliao8026452", "upvotes": -15 },
+    { "username": "woodrowogorman1690171", "upvotes": -17 },
+    { "username": "luciocoachman9697758", "upvotes": -17 },
+    { "username": "latashacompton3188316", "upvotes": -19 },
+    { "username": "franklynpink6193618", "upvotes": -19 },
+    { "username": "karleneschill8423723", "upvotes": -20 },
+    { "username": "warnergoguen6362240", "upvotes": -21 },
+    { "username": "reubenwishon3548875", "upvotes": -21 }
+  ]
 }

@@ -370,7 +370,8 @@ def selectAllBuildings():
         conn = sqlite3.connect('DoesItStinkBYUDataBase.db')
         cursor = conn.cursor()
 
-        sql = """SELECT * FROM Building;"""
+        sql = """SELECT buildingID, fullBuildingName, buildingLocationLat, buildingLocationLong
+                 FROM Building;"""
 
         cursor.execute(sql)
 
@@ -407,24 +408,17 @@ def selectBathroomsInBuilding(buildingID):
 
         sql = """SELECT buildingID, bathroomName, bathroomNumber, floorNumber,
                  (SELECT COUNT(*) AS Exp1 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID) AS numReviews,
-                 (SELECT AVG(Rating.rating) AS Exp2 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID) AS avgRating,
-                 (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 5) AS numFiveReviews,
-                 (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 4) AS numFourReviews,
-                 (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 3) AS numThreeReviews,
-                 (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 2) AS numTwoReviews,
-                 (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 1) AS numOneReviews
+                 (SELECT AVG(Rating.rating) AS Exp2 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID) AS avgRating
                  FROM Bathroom
                  WHERE buildingID = """ + buildingID + """
                  ORDER BY floorNumber, bathroomNumber ASC;"""
-
         cursor.execute(sql)
 
         rows = cursor.fetchall()
 
         bathrooms = []
         for row in rows:
-            ratings = [row[6], row[7], row[8], row[9], row[10]]
-            bathroom = Bathroom(row[0], row[1], row[2], row[3], row[4], row[5], ratings)
+            bathroom = Bathroom(row[0], row[1], row[2], row[3], row[4], row[5])
             bathrooms.append(bathroom)
 
         conn.commit()
@@ -438,10 +432,58 @@ def selectBathroomsInBuilding(buildingID):
         return bathrooms
 # bathrooms = selectBathroomsInBuilding('UPC')
 # for bathroom in bathrooms:
-#     print(bathroom.buildingID, bathroom.bathroomName, bathroom.bathroomNumber, bathroom.floorNumber, '\t', bathroom.numReviews, bathroom.avgRating, bathroom.ratings)
+#     print(bathroom.buildingID, bathroom.bathroomName, bathroom.bathroomNumber, bathroom.floorNumber, '\t', bathroom.numReviews, bathroom.avgRating)
+
+# Takes a bathroomID, and sort, 0=>newest, 1=> oldest, 2=>highestRating, 3=>lowestRating gives a list of Review objects
+def selectInfoOfBathroom(bathroomID, userID):
+    import sqlite3
+
+    try:
+        conn = sqlite3.connect('DoesItStinkBYUDataBase.db')
+        cursor = conn.cursor()
+
+        sqlSelectBathroomInfo = """SELECT buildingID, bathroomName, bathroomNumber,
+        (SELECT COUNT(*) AS Exp1 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID) AS numReviews,
+        (SELECT AVG(Rating.rating) AS Exp2 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID) AS avgRating,
+        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 5) AS numFiveReviews,
+        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 4) AS numFourReviews,
+        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 3) AS numThreeReviews,
+        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 2) AS numTwoReviews,
+        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 1) AS numOneReviews,
+        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = '""" + bathroomID + """' AND Rating.userID = '""" + str(userID) + """') AS userRating
+        FROM Bathroom
+        WHERE bathroomID = '""" + bathroomID + """'
+        ;"""
+        cursor.execute(sqlSelectBathroomInfo)
+
+        data = cursor.fetchone()
+        if data[10] == 1:
+            sqlSelectRatingOfBathroom = """SELECT rating
+                                           FROM Rating
+                                           WHERE bathroomID = '""" + bathroomID + """' AND Rating.userID = '""" + str(userID) + """'
+                                           """
+            cursor.execute(sqlSelectRatingOfBathroom)
+            rating = cursor.fetchone()[0]
+        else:
+            rating = 0
+
+        ratings = [data[5], data[6], data[7], data[8], data[9]]
+        info = Info(data[0], data[1], data[2], data[3], data[4], ratings, rating)
+
+        conn.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print("Failed to work with database:", error)
+        return None
+    finally:
+        if (conn):
+            conn.close()
+    return info
+# info = selectInfoOfBathroom('moa372A', 153)
+# print(info.userRating)
 
 # Takes a bathroom, and sort, gives a list of Review objects
-def selectReviewsInBathroom(bathroomID, sort):
+def selectReviewsInBathroom(bathroomID, sort, userID):
     import sqlite3
 
     try:
@@ -460,9 +502,11 @@ def selectReviewsInBathroom(bathroomID, sort):
             order = 'Upvotes ASC'
 
 
-        sql = """SELECT title, comments, date, Rating.rating, User.login,
+        sql = """SELECT Review.ratingID, title, comments, date, Rating.rating, User.login,
         (SELECT COUNT(*) AS Exp1 FROM Like WHERE Review.ratingID = Like.ratingID) 
-            - (SELECT COUNT(*) AS Exp2 FROM Dislike WHERE Review.ratingID = Dislike.ratingID) AS Upvotes
+            - (SELECT COUNT(*) AS Exp2 FROM Dislike WHERE Review.ratingID = Dislike.ratingID) AS Upvotes,
+        (SELECT COUNT(*) AS Exp2 FROM Like WHERE Review.ratingID = Like.ratingID AND Like.userID = '""" + str(userID) + """') AS userLiked,
+        (SELECT COUNT(*) AS Exp2 FROM Dislike WHERE Review.ratingID = Dislike.ratingID AND Dislike.userID = '""" + str(userID) + """') AS userDisliked
         FROM Review
         INNER JOIN Rating ON Review.ratingID = Rating.ratingID
         INNER JOIN User ON Rating.userID = User.userID
@@ -475,7 +519,7 @@ def selectReviewsInBathroom(bathroomID, sort):
         rows = cursor.fetchall()
         reviews = []
         for row in rows:
-            review = Review(row[0], row[1], row[2], row[3], row[4], row[5])
+            review = Review(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8])
             reviews.append(review)
 
         conn.commit()
@@ -487,34 +531,145 @@ def selectReviewsInBathroom(bathroomID, sort):
         if (conn):
             conn.close()
         return reviews
-# reviews = selectReviewsInBathroom('lvesW105C', 'lowestRating')
+# reviews = selectReviewsInBathroom('rb2207', 'lowestRating', 152)
 # for review in reviews:
-#     print(review.date, review.upvotes, review.title, review.comments, review.rating, review.login)
+#     print(review.date, review.upvotes, review.title, review.comments, review.rating, review.login, '\n', review.userLiked, review.userDisliked)
 
-# Takes a bathroomID, and sort, 0=>newest, 1=> oldest, 2=>highestRating, 3=>lowestRating gives a list of Review objects
-def selectInfoOfBathroom(bathroomID):
+def selectLeaders(time='allTime'):
     import sqlite3
 
     try:
         conn = sqlite3.connect('DoesItStinkBYUDataBase.db')
         cursor = conn.cursor()
 
-        sqlSelectBathroomInfo = """SELECT buildingID, bathroomName, bathroomNumber, floorNumber,
-        (SELECT COUNT(*) AS Exp1 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID) AS numReviews,
-        (SELECT AVG(Rating.rating) AS Exp2 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID) AS avgRating,
-        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 5) AS numFiveReviews,
-        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 4) AS numFourReviews,
-        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 3) AS numThreeReviews,
-        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 2) AS numTwoReviews,
-        (SELECT COUNT(*) AS Exp3 FROM Rating WHERE Rating.bathroomID = Bathroom.bathroomID AND Rating.rating = 1) AS numOneReviews
-        FROM Bathroom
-        WHERE bathroomID = '""" + bathroomID + """'
-        ;"""
-        cursor.execute(sqlSelectBathroomInfo)
+        day = """
+                 SELECT User.login, (tbl1.NumLikes - tbl2.NumDislikes) AS Upvotes
+                 FROM User
+                 INNER JOIN
+                 (
+                 SELECT User.userID, COUNT(*) AS NumLikes
+                 FROM User
+                 INNER JOIN Rating ON User.userID = Rating.userID
+                 INNER JOIN Review ON Rating.ratingID = Review.ratingID
+                 INNER JOIN Like ON Review.ratingID = Like.ratingID
+                 WHERE strftime('%j', date('now')) = strftime('%j', Review.date)
+                   AND strftime('%Y', date('now')) = strftime('%Y', Review.date)
+                 GROUP BY User.userID
+                 ) AS tbl1 ON User.userID = tbl1.userID
+                 INNER JOIN
+                 (
+                 SELECT User.userID, COUNT(*) AS NumDislikes
+                 FROM User
+                 INNER JOIN Rating ON User.userID = Rating.userID
+                 INNER JOIN Review ON Rating.ratingID = Review.ratingID
+                 INNER JOIN Dislike ON Review.ratingID = Dislike.ratingID
+                 WHERE strftime('%j', date('now')) = strftime('%j', Review.date)
+                 GROUP BY User.userID
+                 ) AS tbl2 ON User.userID = tbl2.userID
+                 ORDER BY (tbl1.NumLikes - tbl2.NumDislikes) DESC
+                 LIMIT 20;
+                 """
 
-        info = cursor.fetchone()
-        ratings = [info[6], info[7], info[8], info[9], info[10]]
-        bathroom = Bathroom(info[0], info[1], info[2], info[3], info[4], info[5], ratings)
+        week = """
+                 SELECT User.login, (tbl1.NumLikes - tbl2.NumDislikes) AS Upvotes
+                 FROM User
+                 INNER JOIN
+                 (
+                 SELECT User.userID, COUNT(*) AS NumLikes
+                 FROM User
+                 INNER JOIN Rating ON User.userID = Rating.userID
+                 INNER JOIN Review ON Rating.ratingID = Review.ratingID
+                 INNER JOIN Like ON Review.ratingID = Like.ratingID
+                 WHERE strftime('%W', date('now')) = strftime('%W', Review.date)
+                   AND strftime('%Y', date('now')) = strftime('%Y', Review.date)
+                 GROUP BY User.userID
+                 ) AS tbl1 ON User.userID = tbl1.userID
+                 INNER JOIN
+                 (
+                 SELECT User.userID, COUNT(*) AS NumDislikes
+                 FROM User
+                 INNER JOIN Rating ON User.userID = Rating.userID
+                 INNER JOIN Review ON Rating.ratingID = Review.ratingID
+                 INNER JOIN Dislike ON Review.ratingID = Dislike.ratingID
+                 WHERE strftime('%W', date('now')) = strftime('%W', Review.date)
+                   AND strftime('%Y', date('now')) = strftime('%Y', Review.date)
+                 GROUP BY User.userID
+                 ) AS tbl2 ON User.userID = tbl2.userID
+                 ORDER BY (tbl1.NumLikes - tbl2.NumDislikes) DESC
+                 LIMIT 20;
+                 """
+
+        month = """
+                 SELECT User.login, (tbl1.NumLikes - tbl2.NumDislikes) AS Upvotes
+                 FROM User
+                 INNER JOIN
+                 (
+                 SELECT User.userID, COUNT(*) AS NumLikes
+                 FROM User
+                 INNER JOIN Rating ON User.userID = Rating.userID
+                 INNER JOIN Review ON Rating.ratingID = Review.ratingID
+                 INNER JOIN Like ON Review.ratingID = Like.ratingID
+                 WHERE strftime('%m', date('now')) = strftime('%m', Review.date)
+                   AND strftime('%Y', date('now')) = strftime('%Y', Review.date)
+                 GROUP BY User.userID
+                 ) AS tbl1 ON User.userID = tbl1.userID
+                 INNER JOIN
+                 (
+                 SELECT User.userID, COUNT(*) AS NumDislikes
+                 FROM User
+                 INNER JOIN Rating ON User.userID = Rating.userID
+                 INNER JOIN Review ON Rating.ratingID = Review.ratingID
+                 INNER JOIN Dislike ON Review.ratingID = Dislike.ratingID
+                 WHERE strftime('%m', date('now')) = strftime('%m', Review.date)
+                   AND strftime('%Y', date('now')) = strftime('%Y', Review.date)
+                 GROUP BY User.userID
+                 ) AS tbl2 ON User.userID = tbl2.userID
+                 ORDER BY (tbl1.NumLikes - tbl2.NumDislikes) DESC
+                 LIMIT 20;
+                 """
+
+        allTime = """
+                 SELECT User.login, (tbl1.NumLikes - tbl2.NumDislikes) AS Upvotes
+                 FROM User
+                 INNER JOIN
+                 (
+                 SELECT User.userID, COUNT(*) AS NumLikes
+                 FROM User
+                 INNER JOIN Rating ON User.userID = Rating.userID
+                 INNER JOIN Review ON Rating.ratingID = Review.ratingID
+                 INNER JOIN Like ON Review.ratingID = Like.ratingID
+                 GROUP BY User.userID
+                 ) AS tbl1 ON User.userID = tbl1.userID
+                 INNER JOIN
+                 (
+                 SELECT User.userID, COUNT(*) AS NumDislikes
+                 FROM User
+                 INNER JOIN Rating ON User.userID = Rating.userID
+                 INNER JOIN Review ON Rating.ratingID = Review.ratingID
+                 INNER JOIN Dislike ON Review.ratingID = Dislike.ratingID
+                 GROUP BY User.userID
+                 ) AS tbl2 ON User.userID = tbl2.userID
+                 ORDER BY (tbl1.NumLikes - tbl2.NumDislikes) DESC
+                 LIMIT 20;
+                 """
+        if time == 'day':
+            cursor.execute(day)
+        elif time == 'week':
+            cursor.execute(week)
+        elif time == 'month':
+            cursor.execute(month)
+        else:
+            cursor.execute(allTime)
+
+        leaders = []
+        rows = cursor.fetchall()
+        if len(rows) == 0:
+            newLeader = Leader("Currently no reviews for this time period", 69)
+            leaders.append(newLeader)
+        else:
+            for row in rows:
+                newLeader = Leader(row[0], row[1])
+                leaders.append(newLeader)
 
         conn.commit()
         cursor.close()
@@ -524,12 +679,9 @@ def selectInfoOfBathroom(bathroomID):
     finally:
         if (conn):
             conn.close()
-    return bathroom
-
-# bathroom, reviews = selectInfoAndReviewsInBathroom('ellb113')
-# print(bathroom.buildingID, bathroom.bathroomName, bathroom.bathroomNumber, bathroom.floorNumber, bathroom.numReviews, bathroom.avgRating, bathroom.ratings)
-# for review in reviews:
-#     print(review.date, review.upvotes, review.title, review.comments, review.rating, review.login)
+            return leaders
+# for i, leader in enumerate(getLeaderBoards('week')):
+#     print(i, ":", leader)
 
 # Allows a user to leave a rating, will update rating if user already has one
 def insertRating(bathroomID, userID, rating):
@@ -784,7 +936,7 @@ def insertReview(bathroomID, userID, rating, title, comments):
             VALUES (?,?,?,?);"""
             now = datetime.now()
             formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
-            dataTupleReview = (ratings[0][0], title, comments,formatted_date)
+            dataTupleReview = (ratings[0][0], title, comments, formatted_date)
             cursor.execute(sqlInsertReview, dataTupleReview)
 
         conn.commit()
