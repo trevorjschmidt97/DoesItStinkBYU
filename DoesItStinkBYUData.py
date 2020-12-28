@@ -328,7 +328,14 @@ def deleteAllData():
     deleteAllBathrooms()
     deleteAllBuildings()
     deleteAllUsers()
-
+def deleteAllNonEssentialData():
+    deleteAllLikes()
+    deleteAllDislikes()
+    deleteAllReviews()
+    deleteAllRatings()
+    #deleteAllBathrooms()
+    #deleteAllBuildings()
+    deleteAllUsers()
 def insertUser(login, password, email):
     import sqlite3
     success = True
@@ -854,7 +861,20 @@ def insertDislike(ratingID, userID):
 def insertReview(bathroomID, userID, rating, title, comments):
     import sqlite3
     from datetime import datetime
-
+    title = title.replace("insertSpace", " ")
+    title = title.replace("insertAsterisk", "'")
+    title = title.replace("insertForwardSlash", "/")
+    title = title.replace("insertBackSlash", "\\")
+    title = title.replace("insertPercent", "%")
+    title = title.replace("insertNewLine", "\\n")
+    comments = comments.replace("insertSpace", " ")
+    comments = comments.replace("insertAsterisk", "'")
+    comments = comments.replace("insertForwardSlash", "/")
+    comments = comments.replace("insertBackSlash", "\\")
+    comments = comments.replace("insertPercent", "%")
+    comments = comments.replace("insertNewLine", "\\n")
+    if comments == "No comment":
+        comments = ""
     returnString = ""
 
     # Case 1: User doesn't have a rating, nor a review
@@ -868,8 +888,6 @@ def insertReview(bathroomID, userID, rating, title, comments):
         bathroomIDEdit = "'" + bathroomID + "'"
         userIDEdit = "'" + str(userID) + "'"
         ratingEdit = str(rating)
-        titleEdit = "'" + title + "'"
-        commentsEdit = "'" + comments + "'"
 
         # Check if there's a rating
         sqlSelect = """SELECT * FROM Rating

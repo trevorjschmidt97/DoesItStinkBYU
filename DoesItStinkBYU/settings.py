@@ -31,7 +31,7 @@ SECRET_KEY = 'yv3%du)f!qpuor-+30*=4gjgrjnv^2)d=a5yzti7vk)fqlsx+d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.1.120', '10.4.34.131', '10.0.0.41', '192.168.4.22', '10.37.76.8', 'doesitstinkbyu.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.1.115', '192.168.1.120', '10.4.34.131', '10.0.0.41', '192.168.4.22', '10.37.76.8', 'doesitstinkbyu.herokuapp.com', '10.0.0.41']
 
 # Application definition
 
